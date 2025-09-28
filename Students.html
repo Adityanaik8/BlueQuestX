@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        :root {
+            --primary: #007bff;
+            --primary-dark: #0056b3;
+            --accent: #4dabf7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --card-shadow: 0 4px 6px rgba(0,123,255,0.07);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #212529;
+            min-height: 100vh;
+        }
+
+        .container, .dashboard, .main-content, .content {
+            background: #ffffff;
+        }
+
+        /* Login Page Styles */
+        #loginPage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #007bff 0%, #4dabf7 100%);
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #6c757d;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .demo-login {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .demo-btn {
+            background: #e9ecef;
+            color: #6c757d;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-btn:hover {
+            background: #dee2e6;
+        }
+
+        .demo-info {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            width: 100%;
+            display: none;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h2 {
+            color: var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            width: 200px;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--primary);
+            color: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,123,255,0.08);
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: #e9ecef;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item.active, .menu-item:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .submenu {
+            padding-left: 2.5rem;
+            display: none;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .submenu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            color: #e9ecef;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .submenu-item.active, .submenu-item:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Content Area Styles */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .page-title {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Card Styles */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 25px rgba(0,123,255,0.12);
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-footer {
+            padding: 1.25rem;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .tag-primary {
+            background-color: #cfe2ff;
+            color: var(--primary);
+        }
+
+        .tag-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover, .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: fixed;
+            top: 80px;
+            right: -350px;
+            width: 350px;
+            height: calc(100vh - 80px);
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .notification-panel.active {
+            right: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification-item.unread {
+            background-color: #e7f1ff;
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Resume Preview Styles */
+        .resume-preview {
+            background: white;
+            padding: 2rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .resume-preview h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-preview .contact {
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .resume-preview h2 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Student Portal</h1>
+                <p>Sign in to access your opportunities</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" placeholder="Enter your student ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+            <div class="demo-login">
+                <button class="demo-btn" id="demoLogin">Demo Login</button>
+                <p class="demo-info">Demo ID: student123 | Password: demo123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <header>
+                <div class="header-left">
+                    <h2>Professional Student Portal</h2>
+                </div>
+                <div class="header-right">
+                    <div class="notification-icon" id="notificationIcon">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-profile dropdown" id="userDropdown">
+                        <div class="user-avatar">JS</div>
+                        <span>John Smith</span>
+                        <i class="fas fa-ellipsis-v"></i>
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <div class="dropdown-item" id="settingsBtn">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </div>
+                            <div class="dropdown-item" id="profileBtn">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </div>
+                            <div class="dropdown-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>Help</span>
+                            </div>
+                            <div class="dropdown-item" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <div class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li class="menu-item active" data-tab="opportunity">
+                            <i class="fas fa-briefcase"></i>
+                            <span>My Opportunities</span>
+                        </li>
+                        <li class="menu-item has-submenu" data-tab="achievements">
+                            <i class="fas fa-trophy"></i>
+                            <span>My Achievements</span>
+                        </li>
+                        <div class="submenu active">
+                            <div class="submenu-item active" data-tab="achievements-main">Achievements</div>
+                            <div class="submenu-item" data-tab="certificates">Certificates</div>
+                            <div class="submenu-item" data-tab="projects">Projects</div>
+                            <div class="submenu-item" data-tab="resume">Resume</div>
+                        </div>
+                    </ul>
+                </div>
+
+                <div class="content">
+                    <!-- Opportunities Tab -->
+                    <div class="tab-content active" id="opportunity">
+                        <h2 class="page-title">Opportunities for You</h2>
+                        <div class="card-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Python Developer Intern</h3>
+                                    <span class="tag tag-primary">Internship</span>
+                                </div>
+                                <div class="card-body">
+                                    <p>TechCorp is looking for Python developers with experience in Django and Flask frameworks. This is a remote position with flexible hours.</p>
+                                    <p><strong>Skills:</strong> Python, Django, Flask, REST APIs</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary">Apply Now</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Frontend Developer</h3>
+                                    <span class="tag tag-success">Job Offer</span>
+                                </div>
+                                <div class="card-body">
+                                    <p>WebSolutions Inc. is hiring frontend developers with strong JavaScript skills. Knowledge of React or Vue.js is required.</p>
+                                    <p><strong>Skills:</strong> JavaScript, HTML, CSS, React</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary">Apply Now</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Data Science Intern</h3>
+                                    <span class="tag tag-primary">Internship</span>
+                                </div>
+                                <div class="card-body">
+                                    <p>DataWorks is offering internships to students with skills in data analysis, machine learning, and statistical modeling.</p>
+                                    <p><strong>Skills:</strong> Python, Pandas, NumPy, ML</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary">Apply Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Main Tab -->
+                    <div class="tab-content" id="achievements-main">
+                        <h2 class="page-title">My Achievements</h2>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Add New Achievement</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="achievementForm">
+                                    <div class="form-group">
+                                        <label for="achievementTitle">Title</label>
+                                        <input type="text" id="achievementTitle" placeholder="Enter achievement title" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="achievementDesc">Description</label>
+                                        <textarea id="achievementDesc" placeholder="Describe your achievement" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Achievement</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">My Achievements List</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>No achievements added yet. Add your first achievement above!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certificates Tab -->
+                    <div class="tab-content" id="certificates">
+                        <h2 class="page-title">My Certificates</h2>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Add New Certificate</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="certificateForm">
+                                    <div class="form-group">
+                                        <label for="certificateName">Certificate Name</label>
+                                        <input type="text" id="certificateName" placeholder="Enter certificate name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="issuingOrg">Issuing Organization</label>
+                                        <input type="text" id="issuingOrg" placeholder="Enter organization name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="issueDate">Issue Date</label>
+                                        <input type="date" id="issueDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="certificateFile">Upload Certificate (PDF)</label>
+                                        <input type="file" id="certificateFile" accept=".pdf">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Certificate</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">My Certificates</h3>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Organization</th>
+                                            <th>Issue Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="certificatesTable">
+                                        <tr>
+                                            <td colspan="4" style="text-align: center;">No certificates added yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Tab -->
+                    <div class="tab-content" id="projects">
+                        <h2 class="page-title">My Projects</h2>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Add New Project</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="projectForm">
+                                    <div class="form-group">
+                                        <label for="projectName">Project Name</label>
+                                        <input type="text" id="projectName" placeholder="Enter project name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="projectDesc">Project Description</label>
+                                        <textarea id="projectDesc" placeholder="Describe your project" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="projectTech">Technologies Used</label>
+                                        <input type="text" id="projectTech" placeholder="e.g., Python, JavaScript, React" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="projectLink">Project Link (optional)</label>
+                                        <input type="url" id="projectLink" placeholder="https://...">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Project</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">My Projects</h3>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Project Name</th>
+                                            <th>Technologies</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="projectsTable">
+                                        <tr>
+                                            <td colspan="4" style="text-align: center;">No projects added yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resume Tab -->
+                    <div class="tab-content" id="resume">
+                        <h2 class="page-title">My Resume</h2>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Generate AI-Tailored Resume</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="resumeForm">
+                                    <div class="form-group">
+                                        <label for="opportunitySelect">Select Opportunity</label>
+                                        <select id="opportunitySelect">
+                                            <option value="python">Python Developer Intern</option>
+                                            <option value="frontend">Frontend Developer</option>
+                                            <option value="data">Data Science Intern</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Generate AI Resume</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">Generated Resume Preview</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="resumePreview" class="resume-preview">
+                                    <p>Select an opportunity and generate your tailored resume.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Tab -->
+                    <div class="tab-content" id="profile">
+                        <h2 class="page-title">My Profile</h2>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Personal Information</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="profileForm">
+                                    <div class="form-row">
+                                        <div class="input-group">
+                                            <label for="profileFirstName">First Name</label>
+                                            <input type="text" id="profileFirstName" value="John" required>
+                                        </div>
+                                        <div class="input-group">
+                                            <label for="profileLastName">Last Name</label>
+                                            <input type="text" id="profileLastName" value="Smith" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileEmail">Email</label>
+                                        <input type="email" id="profileEmail" value="john.smith@example.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profilePhone">Phone Number</label>
+                                        <input type="tel" id="profilePhone" value="+1 (555) 123-4567" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileCollege">College/University</label>
+                                        <input type="text" id="profileCollege" value="State University" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileStatus">Employment Status</label>
+                                        <select id="profileStatus">
+                                            <option value="employed">Employed</option>
+                                            <option value="unemployed" selected>Unemployed</option>
+                                            <option value="student">Student</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileSkills">Skills</label>
+                                        <input type="text" id="profileSkills" value="Python, JavaScript, React, Data Analysis" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Settings</h3>
+                    <span class="modal-close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="notificationSettings">Notification Preferences</label>
+                            <select id="notificationSettings">
+                                <option value="all">All Notifications</option>
+                                <option value="important">Important Only</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="privacySettings">Profile Visibility</label>
+                            <select id="privacySettings">
+                                <option value="public">Public</option>
+                                <option value="connections">Connections Only</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailFrequency">Email Frequency</label>
+                            <select id="emailFrequency">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <i class="fas fa-times" id="closeNotifications"></i>
+            </div>
+            <div class="notification-item unread">
+                <p><strong>New Python Internship</strong></p>
+                <p>A new internship opportunity matches your skills</p>
+                <small>10 minutes ago</small>
+            </div>
+            <div class="notification-item unread">
+                <p><strong>Profile Update Reminder</strong></p>
+                <p>Keep your profile updated for better opportunities</p>
+                <small>Yesterday</small>
+            </div>
+            <div class="notification-item">
+                <p><strong>Welcome to Student Portal</strong></p>
+                <p>Get started by exploring opportunities</p>
+                <small>3 days ago</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const demoLogin = document.getElementById('demoLogin');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const submenuItems = document.querySelectorAll('.submenu-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const userDropdown = document.getElementById('userDropdown');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationPanel = document.getElementById('notificationPanel');
+        const closeNotifications = document.getElementById('closeNotifications');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const profileBtn = document.getElementById('profileBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const modalClose = document.querySelector('.modal-close');
+        const achievementForm = document.getElementById('achievementForm');
+        const certificateForm = document.getElementById('certificateForm');
+        const projectForm = document.getElementById('projectForm');
+        const resumeForm = document.getElementById('resumeForm');
+        const profileForm = document.getElementById('profileForm');
+        const settingsForm = document.getElementById('settingsForm');
+
+        // Ensure dashboard is hidden by default
+        dashboard.style.display = 'none';
+
+        // Login Functionality
+        function handleLogin(studentId, password) {
+            // Simple validation - in a real app, this would be server-side
+            if (studentId === 'student123' && password === 'demo123') {
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                return true;
+            } else {
+                alert('Invalid credentials. Please try again or use the demo login.');
+                return false;
+            }
+        }
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const studentId = document.getElementById('studentId').value;
+            const password = document.getElementById('password').value;
+            handleLogin(studentId, password);
+        });
+
+        // Demo Login
+        demoLogin.addEventListener('click', function() {
+            document.getElementById('studentId').value = 'student123';
+            document.getElementById('password').value = 'demo123';
+            // Trigger login form submit for consistent UI
+            loginForm.dispatchEvent(new Event('submit'));
+        });
+
+        // Menu Tab Switching
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Submenu logic
+                if (this.classList.contains('has-submenu')) {
+                    // Hide all submenus first
+                    document.querySelectorAll('.submenu').forEach(sub => sub.classList.remove('active'));
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('active');
+                    return;
+                }
+                menuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                tabContents.forEach(tab => tab.classList.remove('active'));
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Submenu Tab Switching
+        submenuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                submenuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                tabContents.forEach(tab => tab.classList.remove('active'));
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // User Profile Dropdown
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close profile dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target)) {
+                profileDropdown.style.display = 'none';
+            }
+        });
+
+        // Settings Button
+        settingsBtn.addEventListener('click', function() {
+            profileDropdown.style.display = 'none';
+            settingsModal.style.display = 'flex';
+        });
+
+        // Close Settings Modal
+        modalClose.addEventListener('click', function() {
+            settingsModal.style.display = 'none';
+        });
+
+        // Profile Button
+        profileBtn.addEventListener('click', function() {
+            profileDropdown.style.display = 'none';
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            document.getElementById('profile').classList.add('active');
+        });
+
+        // Logout Button
+        logoutBtn.addEventListener('click', function() {
+            profileDropdown.style.display = 'none';
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'flex';
+        });
+
+        // Notification Icon
+        notificationIcon.addEventListener('click', function() {
+            notificationPanel.classList.toggle('active');
+        });
+
+        // Close Notification Panel
+        closeNotifications.addEventListener('click', function() {
+            notificationPanel.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

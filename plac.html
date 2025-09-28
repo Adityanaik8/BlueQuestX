@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(37,99,235,0.10);
+        }
+        .fit-bar {
+            background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+            height: 8px;
+            border-radius: 4px;
+        }
+        .fit-indicator {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+            color: #2563eb;
+            background: transparent;
+        }
+        .nav-item:hover {
+            background-color: #e0e7ff;
+            color: #2563eb;
+            border-radius: 8px;
+        }
+        .nav-item.active {
+            background-color: #2563eb;
+            color: white;
+            border-radius: 8px;
+        }
+        .sidebar {
+            background: white;
+            color: #2563eb;
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(37,99,235,0.08);
+        }
+        .header {
+            background: white;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.05);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .header h1 {
+            color: #2563eb;
+        }
+        .btn {
+            background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+            transform: translateY(-2px);
+        }
+        .stat-card {
+            background: #f1f5f9;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.05);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-number {
+            color: #2563eb;
+        }
+        .stat-label {
+            color: #64748b;
+        }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 220px;
+                z-index: 20;
+            }
+            .ml-64 {
+                margin-left: 220px !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100vw;
+                position: static;
+                min-height: auto;
+            }
+            .ml-64 {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50">
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h4m6 0h2M7 15h10"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Placement Portal</h1>
+                <p class="text-gray-600">Secure Management System</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Placement Officer ID</label>
+                    <input type="text" id="loginId" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="Enter your Placement ID">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="Enter password">
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium">
+                    Secure Login
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <button onclick="quickLogin('placement', 'PO001', 'admin123')" 
+                        class="bg-blue-100 text-blue-800 px-4 py-2 rounded hover:bg-blue-200 transition-all">
+                    Demo Login
+                </button>
+                <p class="text-xs text-gray-400 mt-2">Demo ID: PO001 | Password: admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placement Officer Dashboard -->
+    <div id="placementDashboard" class="hidden min-h-screen bg-gray-50">
+        <div class="flex">
+            <!-- Sidebar -->
+            <div class="w-64 bg-white shadow-lg h-screen fixed left-0 top-0 sidebar-transition">
+                <div class="p-6 border-b">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h4m6 0h2M7 15h10"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-900">Placement Cell</h2>
+                            <p class="text-xs text-gray-500">Management System</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="p-4">
+                    <ul class="space-y-2">
+                        <li>
+                            <button onclick="showSection('dashboard')" class="nav-item active w-full text-left px-4 py-3 flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2v0a2 2 0 002-2h6l2 2h6a2 2 0 012 2v1"></path>
+                                </svg>
+                                Dashboard
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('opportunities')" class="nav-item w-full text-left px-4 py-3 flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                                </svg>
+                                Opportunities
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('students')" class="nav-item w-full text-left px-4 py-3 flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                                Students
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('interviews')" class="nav-item w-full text-left px-4 py-3 flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 112 0v1m-2 0h4m-4 0a2 2 0 00-2 2v10a2 2 0 002 2h4a2 2 0 002-2V9a2 2 0 00-2-2m-4 0V8a2 2 0 012-2h4a2 2 0 012 2v1"></path>
+                                </svg>
+                                Interviews
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('reports')" class="nav-item w-full text-left px-4 py-3 flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                Reports
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="absolute bottom-4 left-4 right-4">
+                    <button onclick="logout()" class="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all text-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="ml-64 flex-1">
+                <!-- Header -->
+                <header class="bg-white shadow-sm border-b px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 id="pageTitle" class="text-2xl font-bold text-gray-900">Dashboard</h1>
+                            <p class="text-gray-600">Welcome back, Placement Officer</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                            </div>
+                            <span class="text-gray-700 font-medium">Officer PO001</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="p-6">
+                    <!-- Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Placed Students</p>
+                                    <p class="text-3xl font-bold text-green-600">142</p>
+                                    <p class="text-xs text-green-600">+12 this month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Unplaced Students</p>
+                                    <p class="text-3xl font-bold text-orange-600">58</p>
+                                    <p class="text-xs text-orange-600">Final year students</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Upcoming Interviews</p>
+                                    <p class="text-3xl font-bold text-blue-600">24</p>
+                                    <p class="text-xs text-blue-600">Next 7 days</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 112 0v1m-2 0h4m-4 0a2 2 0 00-2 2v10a2 2 0 002 2h4a2 2 0 002-2V9a2 2 0 00-2-2m-4 0V8a2 2 0 012-2h4a2 2 0 012 2v1"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Active Opportunities</p>
+                                    <p class="text-3xl font-bold text-purple-600">18</p>
+                                    <p class="text-xs text-purple-600">Open positions</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Tools Row -->
+                    <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Live Interview Scheduler -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">📅 Today's Interview Schedule</h3>
+                                <button onclick="addInterview()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                                    + Add Interview
+                                </button>
+                            </div>
+                            <div class="space-y-3 max-h-48 overflow-y-auto">
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Arjun Kumar</p>
+                                        <p class="text-sm text-gray-600">TechCorp - Technical Round</p>
+                                        <p class="text-xs text-blue-600">10:00 AM - Room 301</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="markComplete('int1')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">
+                                            ✓ Done
+                                        </button>
+                                        <button onclick="reschedule('int1')" class="bg-orange-500 text-white px-2 py-1 rounded text-xs hover:bg-orange-600">
+                                            ⏰ Reschedule
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Priya Sharma</p>
+                                        <p class="text-sm text-gray-600">DataFlow - HR Round</p>
+                                        <p class="text-xs text-purple-600">2:30 PM - Online</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="markComplete('int2')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">
+                                            ✓ Done
+                                        </button>
+                                        <button onclick="sendReminder('int2')" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">
+                                            🔔 Remind
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Rahul Singh</p>
+                                        <p class="text-sm text-gray-600">CodeCraft - Final Round</p>
+                                        <p class="text-xs text-green-600">4:00 PM - Room 205</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="markComplete('int3')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">
+                                            ✓ Done
+                                        </button>
+                                        <button onclick="viewDetails('int3')" class="bg-gray-500 text-white px-2 py-1 rounded text-xs hover:bg-gray-600">
+                                            👁 Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Today: 3 interviews</span>
+                                    <span class="text-blue-600 cursor-pointer hover:underline" onclick="viewFullSchedule()">View full schedule →</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Application Tracker -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">🔄 Live Application Updates</h3>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                    <span class="text-xs text-gray-600">Live</span>
+                                </div>
+                            </div>
+                            <div class="space-y-3 max-h-48 overflow-y-auto">
+                                <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">New Application Received</p>
+                                        <p class="text-xs text-gray-600">Neha Kapoor applied for Java Developer at CodeCraft</p>
+                                        <p class="text-xs text-green-600">2 minutes ago</p>
+                                    </div>
+                                    <button onclick="reviewApplication('app1')" class="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                        Review
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Interview Scheduled</p>
+                                        <p class="text-xs text-gray-600">Arjun Kumar - TechCorp Technical Round</p>
+                                        <p class="text-xs text-blue-600">15 minutes ago</p>
+                                    </div>
+                                    <button onclick="viewInterview('int1')" class="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
+                                        View
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
+                                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">New Opportunity Posted</p>
+                                        <p class="text-xs text-gray-600">InnovateTech posted Frontend Developer role</p>
+                                        <p class="text-xs text-orange-600">1 hour ago</p>
+                                    </div>
+                                    <button onclick="viewOpportunity('opp1')" class="bg-purple-600 text-white px-2 py-1 rounded text-xs hover:bg-purple-700">
+                                        Send
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Placement Confirmed</p>
+                                        <p class="text-xs text-gray-600">Priya Sharma selected by DataFlow Systems</p>
+                                        <p class="text-xs text-purple-600">3 hours ago</p>
+                                    </div>
+                                    <button onclick="celebrateSuccess('success1')" class="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
+                                        🎉 Celebrate
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">24 updates today</span>
+                                    <span class="text-blue-600 cursor-pointer hover:underline" onclick="viewAllUpdates()">View all updates →</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Tools -->
+                    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900">Student Matcher</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Find the best students for specific opportunities based on skills, CGPA, and preferences.</p>
+                            <button onclick="openStudentMatcher()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all">
+                                Find Matches
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900">Bulk Notifications</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Send opportunities, updates, and announcements to multiple students at once.</p>
+                            <button onclick="openBulkSender()" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all">
+                                Send Bulk Message
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900">Analytics Hub</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Generate detailed reports on placement trends, student performance, and company feedback.</p>
+                            <button onclick="openAnalytics()" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-all">
+                                View Analytics
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Smart Recommendations -->
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Smart Recommendations</h3>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white rounded-lg p-4">
+                                <h4 class="font-medium text-gray-900 mb-2">🎯 Action Needed</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 5 students need skill development for Java roles</li>
+                                    <li>• TechCorp interview feedback pending (3 days)</li>
+                                    <li>• 12 applications require your review</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-lg p-4">
+                                <h4 class="font-medium text-gray-900 mb-2">💡 Opportunities</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 8 students perfect match for new Data Science role</li>
+                                    <li>• CodeCraft wants to increase internship slots</li>
+                                    <li>• Consider organizing React.js workshop</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Opportunities -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Recent Opportunities</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+                                Add New Opportunity
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Software Engineer - Full Stack</h4>
+                                        <p class="text-gray-600">TechCorp Solutions</p>
+                                        <p class="text-sm text-gray-500">Contact: hr@techcorp.com | Posted: 2 days ago</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Active</span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <p class="text-sm font-medium text-gray-700 mb-2">Requirements: React, Node.js, MongoDB, 7.5+ CGPA</p>
+                                    <div class="flex gap-2">
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">React</span>
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Node.js</span>
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">MongoDB</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Opportunity Fit Bar -->
+                                <div class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Student Fit Analysis</span>
+                                        <span class="text-sm text-gray-600">23 eligible students</span>
+                                    </div>
+                                    <div class="fit-bar relative">
+                                        <div class="fit-indicator bg-green-500" style="width: 65%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-600 mt-1">
+                                        <span>Perfect Fit (15)</span>
+                                        <span>Good Fit (8)</span>
+                                        <span>Needs Skills (5)</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Top Matching Students -->
+                                <div class="mb-4">
+                                    <p class="text-sm font-medium text-gray-700 mb-2">Top Matches:</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-green-50 text-green-800 px-2 py-1 rounded text-xs border border-green-200">Arjun Kumar (95%)</span>
+                                        <span class="bg-green-50 text-green-800 px-2 py-1 rounded text-xs border border-green-200">Priya Sharma (92%)</span>
+                                        <span class="bg-green-50 text-green-800 px-2 py-1 rounded text-xs border border-green-200">Rahul Singh (88%)</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-2">
+                                    <button onclick="openSendModal('job1')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-all">
+                                        📤 Send Opportunity
+                                    </button>
+                                    <button onclick="sendToAll('job1')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-all">
+                                        Send to All Eligible
+                                    </button>
+                                    <button onclick="viewApplications('job1')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300 transition-all">
+                                        View Applications (12)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Java Developer Internship</h4>
+                                        <p class="text-gray-600">CodeCraft Technologies</p>
+                                        <p class="text-sm text-gray-500">Contact: internships@codecraft.com | Posted: 1 week ago</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Active</span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <p class="text-sm font-medium text-gray-700 mb-2">Requirements: Java, Spring Boot, MySQL, 8.0+ CGPA</p>
+                                    <div class="flex gap-2">
+                                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Java</span>
+                                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Spring Boot</span>
+                                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">MySQL</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Placement Cell Sector Analysis -->
+                                <div class="mb-4 bg-gray-50 rounded-lg p-3">
+                                    <h5 class="font-medium text-gray-900 mb-2">Java Internship Sector Analysis</h5>
+                                    <div class="grid grid-cols-3 gap-4 text-sm">
+                                        <div>
+                                            <span class="text-gray-600">Eligible:</span>
+                                            <span class="font-semibold text-blue-600">18 students</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Perfect Fit:</span>
+                                            <span class="font-semibold text-green-600">12 students</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">Missing 1-2 Skills:</span>
+                                            <span class="font-semibold text-orange-600">6 students</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-2">
+                                    <button onclick="sendToSpecific('job2')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-all">
+                                        Send to Specific Students
+                                    </button>
+                                    <button onclick="sendToAll('job2')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-all">
+                                        Send to All Eligible
+                                    </button>
+                                    <button onclick="viewApplications('job2')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300 transition-all">
+                                        View Applications (8)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opportunities Section -->
+                <div id="opportunitiesSection" class="hidden p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">All Opportunities</h3>
+                            <div class="flex gap-3">
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>All Categories</option>
+                                    <option>Full-time</option>
+                                    <option>Internship</option>
+                                    <option>Part-time</option>
+                                </select>
+                                <input type="text" placeholder="Search opportunities..." class="px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Company</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Role</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Type</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Applications</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-4 py-3">
+                                            <div>
+                                                <p class="font-medium text-gray-900">TechCorp Solutions</p>
+                                                <p class="text-sm text-gray-500">hr@techcorp.com</p>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">Software Engineer</td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Full-time</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="font-semibold">12</span> / 23 eligible
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Active</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex gap-2">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                                <button class="text-green-600 hover:text-green-800 text-sm">Send</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3">
+                                            <div>
+                                                <p class="font-medium text-gray-900">CodeCraft Technologies</p>
+                                                <p class="text-sm text-gray-500">internships@codecraft.com</p>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">Java Developer</td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Internship</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="font-semibold">8</span> / 18 eligible
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Active</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex gap-2">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                                <button class="text-green-600 hover:text-green-800 text-sm">Send</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="studentsSection" class="hidden p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Student Management</h3>
+                            <div class="flex gap-3">
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>All Years</option>
+                                    <option>Final Year</option>
+                                    <option>Third Year</option>
+                                    <option>Second Year</option>
+                                </select>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>All Status</option>
+                                    <option>Placed</option>
+                                    <option>Unplaced</option>
+                                    <option>In Process</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid gap-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                            AK
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Arjun Kumar</h4>
+                                            <p class="text-gray-600">CS2021001 | Computer Science | CGPA: 8.5</p>
+                                            <div class="flex gap-2 mt-2">
+                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">React</span>
+                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Node.js</span>
+                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Python</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Placed</span>
+                                        <p class="text-sm text-gray-600 mt-1">TechCorp Solutions</p>
+                                        <p class="text-xs text-gray-500">Software Engineer</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="coldMail('student1', 'job1')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                            Cold Mail
+                                        </button>
+                                        <button onclick="directApply('student1', 'job1')" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
+                                            Direct Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                            PS
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Priya Sharma</h4>
+                                            <p class="text-gray-600">CS2021002 | Computer Science | CGPA: 9.1</p>
+                                            <div class="flex gap-2 mt-2">
+                                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">Python</span>
+                                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">ML</span>
+                                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">TensorFlow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">In Process</span>
+                                        <p class="text-sm text-gray-600 mt-1">2 Applications</p>
+                                        <p class="text-xs text-gray-500">1 Interview Scheduled</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="coldMail('student2', 'job2')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                            Cold Mail
+                                        </button>
+                                        <button onclick="directApply('student2', 'job2')" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
+                                            Direct Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interviews Section -->
+                <div id="interviewsSection" class="hidden p-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Upcoming Interviews</h3>
+                            <div class="flex gap-3">
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>All Types</option>
+                                    <option>Technical</option>
+                                    <option>HR</option>
+                                    <option>Final</option>
+                                </select>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>All Companies</option>
+                                    <option>TechCorp</option>
+                                    <option>CodeCraft</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Student</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Company</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Role</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date Applied</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Interview Type</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Compensation</th>
+                                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                                    AK
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Arjun Kumar</p>
+                                                    <p class="text-sm text-gray-500">CS2021001</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">TechCorp Solutions</td>
+                                        <td class="px-4 py-3">Software Engineer</td>
+                                        <td class="px-4 py-3">2024-01-15</td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Technical</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Paid</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex gap-2">
+                                                <button onclick="coldMail('student1', 'job1')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                                    Cold Mail
+                                                </button>
+                                                <button onclick="directApply('student1', 'job1')" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
+                                                    Direct Apply
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                                    PS
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Priya Sharma</p>
+                                                    <p class="text-sm text-gray-500">CS2021002</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">DataFlow Systems</td>
+                                        <td class="px-4 py-3">Data Scientist</td>
+                                        <td class="px-4 py-3">2024-01-18</td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">HR</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">Unpaid</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex gap-2">
+                                                <button onclick="coldMail('student2', 'job2')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                                    Cold Mail
+                                                </button>
+                                                <button onclick="directApply('student2', 'job2')" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
+                                                    Direct Apply
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Shortlisted Students Section -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">Shortlisted Students</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="border border-green-200 bg-green-50 rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">TechCorp Solutions - Software Engineer</h4>
+                                        <p class="text-sm text-gray-600">Shortlisted: 5 students | Not Shortlisted: 7 students</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">HR Round</span>
+                                </div>
+                                
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-medium text-green-800 mb-2">✅ Shortlisted Students</h5>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">AK</div>
+                                                <span class="text-sm">Arjun Kumar - Technical Round</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs">PS</div>
+                                                <span class="text-sm">Priya Sharma - HR Round</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="font-medium text-red-800 mb-2">❌ Not Shortlisted</h5>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">RS</div>
+                                                <span class="text-sm text-gray-600">Rahul Singh</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">NK</div>
+                                                <span class="text-sm text-gray-600">Neha Kapoor</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reportsSection" class="hidden p-6">
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Application Tracker</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-900">TechCorp - Software Engineer</p>
+                                        <p class="text-sm text-gray-600">12 applications received</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-green-600">5 shortlisted</p>
+                                        <p class="text-xs text-gray-500">7 pending review</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-900">CodeCraft - Java Developer</p>
+                                        <p class="text-sm text-gray-600">8 applications received</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-green-600">3 shortlisted</p>
+                                        <p class="text-xs text-gray-500">5 pending review</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Placement Statistics</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">Total Students:</span>
+                                    <span class="font-semibold">200</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">Placed Students:</span>
+                                    <span class="font-semibold text-green-600">142</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">Placement Percentage:</span>
+                                    <span class="font-semibold">71%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">Average Package:</span>
+                                    <span class="font-semibold">₹8.5 LPA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const placementDashboard = document.getElementById('placementDashboard');
+        const pageTitle = document.getElementById('pageTitle');
+        
+        // Section Elements
+        const dashboardSection = document.getElementById('dashboardSection');
+        const opportunitiesSection = document.getElementById('opportunitiesSection');
+        const studentsSection = document.getElementById('studentsSection');
+        const interviewsSection = document.getElementById('interviewsSection');
+        const reportsSection = document.getElementById('reportsSection');
+        
+        // Navigation Items
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        // Login Functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const loginId = document.getElementById('loginId').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation
+            if (loginId === 'PO001' && password === 'admin123') {
+                loginPage.classList.add('hidden');
+                placementDashboard.classList.remove('hidden');
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        });
+        
+        // Quick Login for Demo
+        function quickLogin(type, id, pass) {
+            document.getElementById('loginId').value = id;
+            document.getElementById('password').value = pass;
+            
+            // Trigger form submission
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+        
+        // Logout Function
+        function logout() {
+            placementDashboard.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+            // Reset form
+            document.getElementById('loginForm').reset();
+        }
+        
+        // Show Section Function
+        function showSection(section) {
+            // Hide all sections
+            dashboardSection.classList.add('hidden');
+            opportunitiesSection.classList.add('hidden');
+            studentsSection.classList.add('hidden');
+            interviewsSection.classList.add('hidden');
+            reportsSection.classList.add('hidden');
+            
+            // Remove active class from all nav items
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section and update active nav item
+            switch(section) {
+                case 'dashboard':
+                    dashboardSection.classList.remove('hidden');
+                    pageTitle.textContent = 'Dashboard';
+                    navItems[0].classList.add('active');
+                    break;
+                case 'opportunities':
+                    opportunitiesSection.classList.remove('hidden');
+                    pageTitle.textContent = 'Opportunities';
+                    navItems[1].classList.add('active');
+                    break;
+                case 'students':
+                    studentsSection.classList.remove('hidden');
+                    pageTitle.textContent = 'Students';
+                    navItems[2].classList.add('active');
+                    break;
+                case 'interviews':
+                    interviewsSection.classList.remove('hidden');
+                    pageTitle.textContent = 'Interviews';
+                    navItems[3].classList.add('active');
+                    break;
+                case 'reports':
+                    reportsSection.classList.remove('hidden');
+                    pageTitle.textContent = 'Reports';
+                    navItems[4].classList.add('active');
+                    break;
+            }
+        }
+        
+        // Interview Management Functions
+        function addInterview() {
+            alert('Add interview functionality would open a modal here.');
+        }
+        
+        function markComplete(interviewId) {
+            alert(`Marking interview ${interviewId} as complete.`);
+        }
+        
+        function reschedule(interviewId) {
+            alert(`Rescheduling interview ${interviewId}.`);
+        }
+        
+        function sendReminder(interviewId) {
+            alert(`Sending reminder for interview ${interviewId}.`);
+        }
+        
+        function viewDetails(interviewId) {
+            alert(`Viewing details for interview ${interviewId}.`);
+        }
+        
+        function viewFullSchedule() {
+            alert('Viewing full interview schedule.');
+        }
+        
+        // Application Management Functions
+        function reviewApplication(appId) {
+            alert(`Reviewing application ${appId}.`);
+        }
+        
+        function viewInterview(intId) {
+            alert(`Viewing interview ${intId}.`);
+        }
+        
+        function viewOpportunity(oppId) {
+            alert(`Viewing opportunity ${oppId}.`);
+        }
+        
+        function celebrateSuccess(successId) {
+            alert(`Celebrating success ${successId}! 🎉`);
+        }
+        
+        function viewAllUpdates() {
+            alert('Viewing all application updates.');
+        }
+        
+        // Tool Functions
+        function openStudentMatcher() {
+            alert('Opening student matcher tool.');
+        }
+        
+        function openBulkSender() {
+            alert('Opening bulk notification sender.');
+        }
+        
+        function openAnalytics() {
+            alert('Opening analytics hub.');
+        }
+        
+        // Opportunity Management Functions
+        function openSendModal(jobId) {
+            alert(`Opening send modal for job ${jobId}.`);
+        }
+        
+        function sendToAll(jobId) {
+            alert(`Sending job ${jobId} to all eligible students.`);
+        }
+        
+        function viewApplications(jobId) {
+            alert(`Viewing applications for job ${jobId}.`);
+        }
+        
+        function sendToSpecific(jobId) {
+            alert(`Sending job ${jobId} to specific students.`);
+        }
+        
+        // Student Management Functions
+        function coldMail(studentId, jobId) {
+            alert(`Sending cold mail to student ${studentId} about job ${jobId}.`);
+        }
+        
+        function directApply(studentId, jobId) {
+            alert(`Directly applying student ${studentId} to job ${jobId}.`);
+        }
+    </script>
+</body>
+</html>

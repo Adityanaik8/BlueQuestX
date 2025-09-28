@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Supervisor Evaluation Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .certificate-preview {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 3px solid #1e40af;
+            position: relative;
+        }
+        
+        .certificate-preview::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #3b82f6;
+            pointer-events: none;
+        }
+        
+        .skill-meter {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .signature-pad {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .signature-pad:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .evaluation-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .evaluation-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .code-input {
+            width: 3rem;
+            height: 3.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 0.25rem;
+        }
+        
+        .signature-canvas {
+            border: 1px solid #cbd5e1;
+            background: white;
+            cursor: crosshair;
+        }
+        
+        .stamp-preview {
+            width: 120px;
+            height: 120px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            transition: width 0.5s ease;
+        }
+        
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            background-color: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .step-indicator.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <!-- Back to Home/Second Page Button -->
+    <div class="fixed top-6 left-6 z-50">
+        <a href="second.html" class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition-all font-medium flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Portal Selection
+        </a>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Supervisor Portal</h1>
+                <p class="text-gray-600">Professional Evaluation System</p>
+                <p class="text-sm text-blue-600 font-medium">Authorized Access Only</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input type="email" id="email" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                           placeholder="Enter your email address">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Verification Code</label>
+                    <input type="text" id="verificationCode" maxlength="6"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="Enter code (e.g. 123456)">
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 transition-all font-medium">
+                    Access Portal
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <button onclick="sendVerificationCode()" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    Send Verification Code
+                </button>
+                <p class="text-xs text-gray-400 mt-2">Demo: Use any email and code "123456"</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Search & Evaluation Page -->
+    <div id="evaluationPage" class="hidden min-h-screen p-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6 fade-in">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Professional Evaluation Portal</h1>
+                        <p class="text-gray-600">Welcome, <span id="loggedInSupervisor" class="font-medium text-blue-600"></span></p>
+                    </div>
+                    <button onclick="logout()" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-all font-medium">
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6 fade-in">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex-1">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between">
+                    <div class="flex flex-col items-center">
+                        <div id="step1Indicator" class="step-indicator active">1</div>
+                        <p class="text-sm font-medium mt-2">Student Search</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="step2Indicator" class="step-indicator">2</div>
+                        <p class="text-sm font-medium mt-2">Evaluation</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="step3Indicator" class="step-indicator">3</div>
+                        <p class="text-sm font-medium mt-2">Review</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="step4Indicator" class="step-indicator">4</div>
+                        <p class="text-sm font-medium mt-2">Certificate</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div id="searchSection" class="bg-white rounded-xl shadow-lg p-6 mb-6 fade-in">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-极6m2-5a7 7 0 11-14 0 7 7 极0 0114 0z"></path>
+                    </svg>
+                    Student Search
+                </h2>
+                <div class="flex gap-4">
+                    <input type="text" id="studentIdSearch" 
+                           class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Enter Student ID (e.g., STU001, STU002, STU003)">
+                    <button onclick="searchStudent()" 
+                            class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all font-medium">
+                        Search Student
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student Info Display -->
+            <div id="studentInfo" class="hidden bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-xl p-6 mb-6 slide-in">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semib极old text-gray-900">Student Located</h3>
+                        <p class="text-gray-600">Name: <span id="studentName" class="font-semibold text-green-700 text-lg"></span></p>
+                        <p class="text-gray-600">Student ID: <span id="displayStudentId" class="font-medium text-green-700"></span></p>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="proceedToEvaluation()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all font-medium">
+                        Proceed to Evaluation →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Professional Evaluation Section -->
+            <div id="evaluationSection" class="hidden space-y-6">
+                <!-- Performance Level Assessment -->
+                <div class="evaluation-card rounded-xl shadow-lg p-6 fade-in">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2极v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Performance Level Assessment
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-4">Overall Performance Level</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                                    <input type="radio" name="performanceLevel" value="excellent" class="mr-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <span class="font-medium text-green-600">🏆 Excellent</span>
+                                        <p class="text-sm text-gray-500">Outstanding performance, exceeds expectations</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                                    <input type="radio" name="performanceLevel" value="very-good" class="mr-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <span class="font-medium text-blue-600">⭐ Very Good</span>
+                                        <p class="text-sm text-gray-500">Consistently high quality work</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                                    <input type="radio" name="performanceLevel" value="good" class="mr-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <span class="font-medium text-indigo-600">✅ Good</span>
+                                        <p class="text-sm text-gray-500">Meets expectations with quality results</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                                    <input type="radio" name="performanceLevel" value="satisfactory" class="mr-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <span class="font-medium text-yellow-600">📋 Satisfactory</span>
+                                        <p class="text-sm text-gray-500">Acceptable performance, meets basic requirements</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                                    <input type="radio" name="performanceLevel" value="needs-improvement" class="mr-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <span class="font-medium text-orange-600">⚠ Needs Improvement</span>
+                                        <p class="text-sm text-gray-500">Below expectations, requires development</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-4">Professional Skills Assessment</label>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Technical Skills</span>
+                                        <span id="technicalValue" class="text-sm text-blue-600 font-medium">0/10</span>
+                                    </div>
+                                    <input type="range" id="technicalSkills" min="0" max="10" value="0" 
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                           oninput="updateSkillValue('technical', this.value)">
+                                    <div class="skill-meter mt-2">
+                                        <div id="technicalFill" class="skill-fill bg-blue-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Communication Skills</span>
+                                        <span id="communicationValue" class="text-sm text-green-600 font-medium">0/10</span>
+                                    </div>
+                                    <input type="range" id="communicationSkills" min="0" max="10" value="0" 
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                           oninput="updateSkillValue('communication', this.value)">
+                                    <div class="skill-meter mt-2">
+                                        <div id="communicationFill" class="skill-fill bg-green-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Teamwork & Collaboration</span>
+                                        <span id="teamworkValue" class="text极m text-purple-600 font-medium">0/10</span>
+                                    </div>
+                                    <input type="range" id="teamworkSkills" min="0" max="10" value="0" 
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                           oninput="updateSkillValue('teamwork', this.value)">
+                                    <div class="skill-meter mt-2">
+                                        <div id="teamworkFill" class="skill-fill bg-purple-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb极2">
+                                        <span class="text-sm font-medium text-gray-700">Problem Solving</span>
+                                        <span id="problemSolvingValue" class="text-sm text-orange-600 font-medium">0/10</span>
+                                    </div>
+                                    <input type="range" id="problemSolvingSkills" min="0" max="10" value="0" 
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                           oninput="updateSkillValue('problemSolving', this.value)">
+                                    <div class="skill-meter mt-2">
+                                        <div id="problemSolvingFill" class="skill-fill bg-orange-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Feedback Section -->
+                <div class="evaluation-card rounded-xl shadow-lg p-6 fade-in">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Professional Feedback & Comments
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Strengths & Achievements</label>
+                            <textarea id="strengthsComments" rows="6" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                                      placeholder="Highlight the student's key strengths, notable achievements, and areas where they excelled..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Areas for Development</label>
+                            <textarea id="improvementComments" rows="6" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                                      placeholder="Provide constructive feedback on areas where the student can improve and grow professionally..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Overall Professional Assessment</label>
+                        <textarea id="overallComments" rows="4" 
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                  placeholder="Provide a comprehensive summary of the student's overall performance, work quality, and professional readiness..."></textarea>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="backToSearch()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all font-medium">
+                            ← Back to Search
+                        </button>
+                        <button onclick="completeEvaluation()" 
+                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all font-medium">
+                            Review Evaluation →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            <div id="reviewSection" class="hidden space-y-6">
+                <div class="evaluation-card rounded-xl shadow-lg p-6 fade-in">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Review Your Evaluation
+                    </h2>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-blue-800">Please review your evaluation before proceeding to certificate generation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Student Information</h3>
+                            <div class="space-y-2">
+                                <p><span class="font-medium">Name:</span> <span id="reviewStudentName"></span></p>
+                                <p><span class="font-medium">ID:</span> <span id="reviewStudentId"></span></p>
+                            </div>
+                            
+                            <h3 class="text-lg font-medium text-gray-900 mt-6 mb-4">Performance Assessment</h3>
+                            <div class="space-y-2">
+                                <p><span class="font-medium">Overall Level:</span> <span id="reviewPerformanceLevel"></span></p>
+                                <p><span class="font-medium">Technical Skills:</span> <span id="reviewTechnical"></span>/10</p>
+                                <p><span class="font-medium">Communication:</span> <span id="reviewCommunication"></span>/10</p>
+                                <p><span class="font-medium">Teamwork:</span> <span id="reviewTeamwork"></span>/10</p>
+                                <p><span class="font-medium">Problem Solving:</span> <span id="reviewProblemSolving"></span>/10</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Feedback Summary</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="font-medium text-green-700">Strengths & Achievements:</p>
+                                    <p id="reviewStrengths" class="text-sm text-gray-600 bg-green-50 p-3 rounded-lg mt-1"></p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-orange-700">Areas for Development:</p>
+                                    <p id="reviewImprovements" class="text-sm text-gray-600 bg-orange-50 p-3 rounded-lg mt-1"></p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-blue-700">Overall Assessment:</p>
+                                    <p id="reviewOverall" class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg mt-1"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="backToEvaluation()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all font-medium">
+                            ← Edit Evaluation
+                        </button>
+                        <button onclick="proceedToCertificate()" 
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium">
+                            Generate Certificate →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Generation Section -->
+            <div id="certificateSection" class="hidden space-y-6">
+                <div class="evaluation-card rounded-xl shadow-lg p-6 fade-in">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 极0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                        Professional Certificate Generation
+                    </h2>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-green-800 font-medium">Professional evaluation completed successfully! Ready for certificate generation.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Supervisor Name</label>
+                                    <input type="text" id="supervisorName" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                           placeholder="Enter full name">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Designation/Title</label>
+                                    <input type="text" id="supervisorDesignation" 
+                                           class极="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                           placeholder="e.g., Senior Project Manager">
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Certificate Issue Date</label>
+                                    <input type="date" id="issueDate" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Certificate Validity End Date</label>
+                                    <input type="date" id="validityDate" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Organization/Company</label>
+                                <input type="text" id="organization" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="Enter organization name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Program/Course</label>
+                                <input type="text" id="programName" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="Enter program or course name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Duration/Hours</label>
+                                <input type极="text" id="programDuration" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="e极.g., 3 months, 120 hours">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Digital Signature</label>
+                                <div class="border border-gray-300 rounded-lg p-4">
+                                    <canvas id="signatureCanvas" class="signature-canvas w-full h-32 mb-2"></canvas>
+                                    <div class="flex justify-between">
+                                        <button onclick="clearSignature()" class="text-sm text-red-600 hover:text-red-800">
+                                            Clear
+                                        </button>
+                                        <button onclick="saveSignature()" class="text-sm text-blue-600 hover:text-blue-800">
+                                            Save Signature
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Official Stamp/Seal</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="stamp-preview" id="stampPreview">
+                                        <span class="text-gray-500 text-xs text-center">No stamp uploaded</span>
+                                    </div>
+                                    <div>
+                                        <input type="file" id="stampUpload" accept="image/*" class="hidden" onchange="handleStampUpload(this)">
+                                        <button onclick="document.getElementById('stampUpload').click()" 
+                                                class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium">
+                                            Upload Stamp
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Certificate Preview</h3>
+                            <div class="certificate-preview rounded-lg p-8">
+                                <div class="text-center">
+                                    <h2 class="text-2xl font-bold text-blue-800 mb-2">Certificate of Completion</h2>
+                                    <p class="text-gray-600 mb-6">This is to certify that</p>
+                                    <h3 id="previewStudentName" class="text-3xl font-bold text-gray-900 mb-2"></h3>
+                                    <p class="text-gray-600 mb-6">has successfully completed the</p>
+                                    <p id="previewProgram" class="text-xl font-medium text-blue-700 mb-2">[Program Name]</p>
+                                    <p id="previewDuration" class="text-gray-600 mb-8">[Duration/Hours]</p>
+                                    
+                                    <div class="flex justify-center gap-8 mb-8">
+                                        <div class="text-center">
+                                            <div class="h-16 border-b-2 border-blue-300 mb-2" id="signaturePreview">
+                                                <span class="text-xs text-gray-500">Signature will appear here</span>
+                                            </div>
+                                            <p id="previewSupervisor" class="text-sm font-medium text-gray-700"></p>
+                                            <p id="previewDesignation" class="text-xs text-gray-500"></p>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="h-16 mb-2" id="stampContainer">
+                                                <span class="text-xs text-gray-500">Stamp will appear here</span>
+                                            </div>
+                                            <p class="text-xs text-gray-500">Official Seal</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-xs text-gray-500">
+                                        <p>Issued on: <span id="previewIssueDate"></span></p>
+                                        <p>Valid until: <span id="previewValidityDate"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="backToReview()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all font-medium">
+                            ← Back to Review
+                        </button>
+                        <button onclick="generateCertificate()" 
+                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all font-medium">
+                            Download Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Student database
+        const studentDatabase = {
+            "STU001": { name: "Alex Johnson", program: "Web Development Internship", duration: "3 months, 120 hours" },
+            "STU002": { name: "Maria Garcia", program: "Data Science Fellowship", duration: "6 months, 240 hours" },
+            "STU003": { name: "David Kim", program: "UX/UI Design Program", duration: "2 months, 80 hours" },
+            "STU004": { name: "Sarah Williams", program: "Digital Marketing Course", duration: "4 months, 160 hours" },
+            "STU005": { name: "James Wilson", program: "Software Engineering Bootcamp", duration: "12 weeks, 360 hours" }
+        };
+        
+        // Global variables
+        let currentStudentId = null;
+        let currentStep = 1;
+        let signatureImage = null;
+        let stampImage = null;
+        
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates
+            const today = new Date();
+            document.getElementById('issueDate').valueAsDate = today;
+            
+            const validityDate = new Date();
+            validityDate.setMonth(today.getMonth() + 6);
+            document.getElementById('validityDate').valueAsDate = validityDate;
+            
+            // Initialize signature canvas
+            const canvas = document.getElementById('signatureCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#1e40af';
+            
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events for mobile devices
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleTouchEnd);
+            
+            function startDrawing(e) {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+            
+            function stopDrawing() {
+                isDrawing = false;
+            }
+            
+            function handleTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }
+            
+            function handleTouchMove(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }
+            
+            function handleTouchEnd(e) {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            }
+        });
+        
+        // Login Functions
+        function sendVerificationCode() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Please enter your email address first.');
+                return;
+            }
+            
+            // In a real application, this would send an email with a verification code
+            alert(`Verification code sent to ${email}. For demo purposes, use code: 123456`);
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const code = document.getElementById('verificationCode').value;
+            
+            if (!email) {
+                alert('Please enter your email address.');
+                return;
+            }
+            
+            // Demo verification - any code works, but 123456 is suggested
+            if (!code) {
+                alert('Please enter the verification code.');
+                return;
+            }
+            
+            // Store supervisor email for display
+            document.getElementById('loggedInSupervisor').textContent = email;
+            
+            // Show evaluation page
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('evaluationPage').classList.remove('hidden');
+            
+            // Update progress
+            updateProgress(1);
+        });
+        
+        function logout() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('evaluationPage').classList.add('hidden');
+            
+            // Reset form
+            document.getElementById('loginForm').reset();
+            
+            // Reset progress
+            currentStep = 1;
+            updateProgress(1);
+        }
+        
+        // Student Search Functions
+        function searchStudent() {
+            const studentId = document.getElementById('studentIdSearch').value.trim().toUpperCase();
+            
+            if (!studentId) {
+                alert('Please enter a Student ID.');
+                return;
+            }
+            
+            if (studentDatabase[studentId]) {
+                const student = studentDatabase[studentId];
+                document.getElementById('studentName').textContent = student.name;
+                document.getElementById('displayStudentId').textContent = studentId;
+                document.getElementById('studentInfo').classList.remove('hidden');
+                
+                // Store current student ID
+                currentStudentId = studentId;
+            } else {
+                alert('Student not found. Please check the Student ID and try again.\n\nAvailable demo IDs: STU001, STU002, STU003, STU004, STU005');
+            }
+        }
+        
+        function proceedToEvaluation() {
+            document.getElementById('searchSection').classList.add('hidden');
+            document.getElementById('studentInfo').classList.add('hidden');
+            document.getElementById('evaluationSection').classList.remove('hidden');
+            
+            // Update progress
+            currentStep = 2;
+            updateProgress(2);
+        }
+        
+        function backToSearch() {
+            document.getElementById('searchSection').classList.remove('hidden');
+            document.getElementById('evaluationSection').classList.add('hidden');
+            
+            // Update progress
+            currentStep = 1;
+            updateProgress(1);
+        }
+        
+        // Evaluation Functions
+        function updateSkillValue(skill, value) {
+            document.getElementById(`${skill}Value`).textContent = `${value}/10`;
+            document.getElementById(`${skill}Fill`).style.width = `${value * 10}%`;
+        }
+        
+        function completeEvaluation() {
+            // Validate form
+            const performanceLevel = document.querySelector('input[name="performanceLevel"]:checked');
+            
+            if (!performanceLevel) {
+                alert('Please select an overall performance level.');
+                return;
+            }
+            
+            // Gather evaluation data for review
+            document.getElementById('reviewStudentName').textContent = studentDatabase[currentStudentId].name;
+            document.getElementById('reviewStudentId').textContent = currentStudentId;
+            
+            // Map performance level values to display text
+            const performanceMap = {
+                'excellent': '🏆 Excellent',
+                'very-good': '⭐ Very Good',
+                'good': '✅ Good',
+                'satisfactory': '📋 Satisfactory',
+                'needs-improvement': '⚠ Needs Improvement'
+            };
+            
+            document.getElementById('reviewPerformanceLevel').textContent = performanceMap[performanceLevel.value];
+            document.getElementById('reviewTechnical').textContent = document.getElementById('technicalSkills').value;
+            document.getElementById('reviewCommunication').textContent = document.getElementById('communicationSkills').value;
+            document.getElementById('reviewTeamwork').textContent = document.getElementById('teamworkSkills').value;
+            document.getElementById('reviewProblemSolving').textContent = document.getElementById('problemSolvingSkills').value;
+            document.getElementById('reviewStrengths').textContent = document.getElementById('strengthsComments').value || 'No strengths provided.';
+            document.getElementById('reviewImprovements').textContent = document.getElementById('improvementComments').value || 'No improvement areas provided.';
+            document.getElementById('reviewOverall').textContent = document.getElementById('overallComments').value || 'No overall assessment provided.';
+            
+            // Show review section
+            document.getElementById('evaluationSection').classList.add('hidden');
+            document.getElementById('reviewSection').classList.remove('hidden');
+            
+            // Update progress
+            currentStep = 3;
+            updateProgress(3);
+        }
+        
+        function backToEvaluation() {
+            document.getElementById('reviewSection').classList.add('hidden');
+            document.getElementById('evaluationSection').classList.remove('hidden');
+            
+            // Update progress
+            currentStep = 2;
+            updateProgress(2);
+        }
+        
+        function proceedToCertificate() {
+            document.getElementById('reviewSection').classList.add('hidden');
+            document.getElementById('certificateSection').classList.remove('hidden');
+            
+            // Update certificate preview
+            document.getElementById('previewStudentName').textContent = studentDatabase[currentStudentId].name;
+            document.getElementById('previewProgram').textContent = studentDatabase[currentStudentId].program;
+            document.getElementById('previewDuration').textContent = studentDatabase[currentStudentId].duration;
+            
+            // Update progress
+            currentStep = 4;
+            updateProgress(4);
+        }
+        
+        function backToReview() {
+            document.getElementById('certificateSection').classList.add('hidden');
+            document.getElementById('reviewSection').classList.remove('hidden');
+            
+            // Update progress
+            currentStep = 3;
+            updateProgress(3);
+        }
+        
+        // Certificate Functions
+        function clearSignature() {
+            const canvas = document.getElementById('signatureCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function saveSignature() {
+            const canvas = document.getElementById('signatureCanvas');
+            signatureImage = canvas.toDataURL('image/png');
+            
+            // Update preview
+            document.getElementById('signaturePreview').innerHTML = '<img src="' + signatureImage + '" alt="Signature" class="h-full mx-auto">';
+            
+            alert('Signature saved successfully!');
+        }
+        
+        function handleStampUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    stampImage = e.target.result;
+                    document.getElementById('stampPreview').innerHTML = '<img src="' + stampImage + '" alt="Stamp" class="w-full h-full object-contain">';
+                    document.getElementById('stampContainer').innerHTML = '<img src="' + stampImage + '" alt="Stamp" class="h-full mx-auto">';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        // Update certificate preview when form fields change
+        document.getElementById('supervisorName').addEventListener('input', function() {
+            document.getElementById('previewSupervisor').textContent = this.value;
+        });
+        
+        document.getElementById('supervisorDesignation').addEventListener('input', function() {
+            document.getElementById('previewDesignation').textContent = this.value;
+        });
+        
+        document.getElementById('issueDate').addEventListener('change', function() {
+            document.getElementById('previewIssueDate').textContent = this.value;
+        });
+        
+        document.getElementById('validityDate').addEventListener('change', function() {
+            document.getElementById('previewValidityDate').textContent = this.value;
+        });
+        
+        document.getElementById('organization').addEventListener('input', function() {
+            // Could be used in a more detailed certificate template
+        });
+        
+        document.getElementById('programName').addEventListener('input', function() {
+            document.getElementById('previewProgram').textContent = this.value;
+        });
+        
+        document.getElementById('programDuration').addEventListener('input', function() {
+            document.getElementById('previewDuration').textContent = this.value;
+        });
+        
+        function generateCertificate() {
+            // Validate certificate form
+            const supervisorName = document.getElementById('supervisorName').value;
+            
+            if (!supervisorName) {
+                alert('Please enter your name as the supervisor.');
+                return;
+            }
+            
+            if (!signatureImage) {
+                alert('Please provide your digital signature.');
+                return;
+            }
+            
+            // In a real application, this would generate and download a PDF certificate
+            alert('Certificate generated successfully! In a real application, this would download a PDF file.');
+            
+            // For demo purposes, show a success message
+            const certificateSection = document.getElementById('certificateSection');
+            certificateSection.innerHTML = `
+                <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                    <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Certificate Generated Successfully!</h2>
+                    <p class="text-gray-600 mb-6">The professional certificate for ${studentDatabase[currentStudentId].name} has been generated and is ready for distribution.</p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="startNewEvaluation()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all font-medium">
+                            Start New Evaluation
+                        </button>
+                        <button onclick="logout()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all font-medium">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function startNewEvaluation() {
+            // Reset the entire form
+            document.getElementById('studentIdSearch').value = '';
+            document.getElementById('loginForm').reset();
+            
+            // Reset evaluation form
+            document.querySelector('input[name="performanceLevel"]:checked')?.removeAttribute('checked');
+            document.getElementById('technicalSkills').value = 0;
+            document.getElementById('communicationSkills').value = 0;
+            document.getElementById('teamworkSkills').value = 0;
+            document.getElementById('problemSolvingSkills').value = 0;
+            document.getElementById('strengthsComments').value = '';
+            document.getElementById('improvementComments').value = '';
+            document.getElementById('overallComments').value = '';
+            
+            // Reset certificate form
+            document.getElementById('supervisorName').value = '';
+            document.getElementById('supervisorDesignation').value = '';
+            document.getElementById('organization').value = '';
+            document.getElementById('programName').value = '';
+            document.getElementById('programDuration').value = '';
+            clearSignature();
+            document.getElementById('stampPreview').innerHTML = '<span class="text-gray-500 text-xs text-center">No stamp uploaded</span>';
+            document.getElementById('stampContainer').innerHTML = '<span class="text-xs text-gray-500">Stamp will appear here</span>';
+            
+            // Reset UI state
+            document.getElementById('searchSection').classList.remove('hidden');
+            document.getElementById('studentInfo').classList.add('hidden');
+            document.getElementById('evaluationSection').classList.add('hidden');
+            document.getElementById('reviewSection').classList.add('hidden');
+            
+            // Reinitialize certificate section
+            document.getElementById('certificateSection').innerHTML = document.querySelector('#certificateSection > div').outerHTML;
+            
+            // Update progress
+            currentStep = 1;
+            updateProgress(1);
+        }
+        
+        // Progress Tracking
+        function updateProgress(step) {
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = (step / 4) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update step indicators
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`step${i}Indicator`);
+                if (i < step) {
+                    indicator.className = 'step-indicator completed';
+                } else if (i === step) {
+                    indicator.className = 'step-indicator active';
+                } else {
+                    indicator.className = 'step-indicator';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

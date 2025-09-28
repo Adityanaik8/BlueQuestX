@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueQuestX - Professional Placement Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: var(--card-shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-radius: 0 0 1rem 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        /* Login Options Section */
+        .login-options {
+            padding: 2rem 0 4rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .card-description {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .features-list i {
+            color: var(--success);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem 1.5rem 0;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .modal-body {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            background: white;
+            box-shadow: var(--card-shadow);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-content {
+            padding: 2rem;
+        }
+
+        .dashboard-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        /* Placement Dashboard Styles */
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fit-bar {
+            background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .fit-indicator {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+        }
+        
+        .nav-item.active {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 8px;
+        }
+
+        /* Supervisor Evaluation Styles */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .certificate-preview {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 3px solid #1e40af;
+            position: relative;
+        }
+        
+        .certificate-preview::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #3b82f6;
+            pointer-events: none;
+        }
+        
+        .skill-meter {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .signature-pad {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .signature-pad:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .evaluation-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .evaluation-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Student Dashboard Styles */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            width: 200px;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .notification-panel {
+            position: fixed;
+            top: 80px;
+            right: -350px;
+            width: 350px;
+            height: calc(100vh - 80px);
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .notification-panel.active {
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-handshake"></i>
+                <span>BlueQuestX</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Your Career Journey Starts Here</h1>
+            <p>Connect with opportunities, showcase your skills, and advance your professional journey with our comprehensive placement platform.</p>
+        </div>
+    </section>
+
+    <!-- Login Options Section -->
+    <section class="login-options">
+        <div class="container">
+            <h2 class="section-title">Access Your Portal</h2>
+            
+            <div class="cards-container">
+                <!-- Placement Cell Login -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="card-title">Placement Cell Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Access the administrative dashboard to manage placements, opportunities, and student data.</p>
+                        
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> Manage job postings</li>
+                            <li><i class="fas fa-check-circle"></i> Track student applications</li>
+                            <li><i class="fas fa-check-circle"></i> Coordinate with recruiters</li>
+                            <li><i class="fas fa-check-circle"></i> Generate placement reports</li>
+                        </ul>
+                        
+                        <a href="plac.html" class="btn">Login to Placement Portal</a>
+                    </div>
+                </div>
+                
+                <!-- Recruiter/Supervisor Login -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="card-title">Recruiter Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Post job opportunities, review candidate profiles, and manage your recruitment process.</p>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> Post new job opportunities</li>
+                            <li><i class="fas fa-check-circle"></i> Review student applications</li>
+                            <li><i class="fas fa-check-circle"></i> Schedule interviews</li>
+                            <li><i class="fas fa-check-circle"></i> Manage candidate pipeline</li>
+                        </ul>
+                        <a href="a_whiteblue_fixed.html" class="btn">Login as Recruiter</a>
+                        <a href="super.html" class="btn btn-outline" style="margin-top: 0.5rem;">Login as Supervisor</a>
+                    </div>
+                </div>
+                
+                <!-- Student Login -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3 class="card-title">Student Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Explore career opportunities, showcase your achievements, and manage your job applications.</p>
+                        
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> Browse job opportunities</li>
+                            <li><i class="fas fa-check-circle"></i> Manage your profile</li>
+                            <li><i class="fas fa-check-circle"></i> Track applications</li>
+                            <li><i class="fas fa-check-circle"></i> Showcase achievements</li>
+                        </ul>
+                        
+                        <a href="Students.html" class="btn">Login to Student Portal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BlueQuestX</h3>
+                    <p>Connecting talent with opportunity through our comprehensive placement platform.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@careerconnect.edu</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Education Lane, Campus City</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 BlueQuestX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modals -->
+    <!-- Placement Cell Login Modal -->
+    <div id="placementLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Placement Cell Login</h3>
+                <span class="modal-close" onclick="closeModal('placementLoginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="placementLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Placement Officer ID</label>
+                        <input type="text" id="placementId" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter your Placement ID">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="placementPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter password">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium">
+                        Secure Login
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="quickLogin('placement', 'PO001', 'admin123')" 
+                            class="bg-blue-100 text-blue-800 px-4 py-2 rounded hover:bg-blue-200 transition-all">
+                        Demo Login
+                    </button>
+                    <p class="text-xs text-gray-400 mt-2">Demo ID: PO001 | Password: admin123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recruiter Login Modal -->
+    <div id="recruiterLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Recruiter Login</h3>
+                <span class="modal-close" onclick="closeModal('recruiterLoginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="recruiterLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Recruiter ID</label>
+                        <input type="text" id="recruiterId" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter your Recruiter ID">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="recruiterPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter password">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium">
+                        Login
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="quickLogin('recruiter', 'REC001', 'recruiter123')" 
+                            class="bg-blue-100 text-blue-800 px-4 py-2 rounded hover:bg-blue-200 transition-all">
+                        Demo Login
+                    </button>
+                    <p class="text-xs text-gray-400 mt-2">Demo ID: REC001 | Password: recruiter123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supervisor Login Modal -->
+    <div id="supervisorLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Supervisor Login</h3>
+                <span class="modal-close" onclick="closeModal('supervisorLoginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="supervisorLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Supervisor ID</label>
+                        <input type="text" id="supervisorId" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                               placeholder="Enter your supervisor ID">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="supervisorPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                               placeholder="Enter your password">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 transition-all font-medium">
+                        Access Portal
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="quickLogin('supervisor', 'SUP001', 'supervisor123')" 
+                            class="bg-blue-100 text-blue-800 px-4 py-2 rounded hover:bg-blue-200 transition-all">
+                        Demo Login
+                    </button>
+                    <p class="text-xs text-gray-400 mt-2">Demo ID: SUP001 | Password: supervisor123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Login Modal -->
+    <div id="studentLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Student Login</h3>
+                <span class="modal-close" onclick="closeModal('studentLoginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="studentLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="studentEmail" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter your email">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="studentPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter password">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text" id="studentFirstName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="First Name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text" id="studentLastName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="Last Name">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="studentPhone" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter your phone number">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium">
+                        Login
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="quickLogin('student', 'STU001', 'student123')" 
+                            class="bg-blue-100 text-blue-800 px-4 py-2 rounded hover:bg-blue-200 transition-all">
+                        Demo Login
+                    </button>
+                    <p class="text-xs text-gray-400 mt-2">Demo ID: STU001 | Password: student123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Containers -->
+    <!-- Placement Dashboard -->
+    <div id="placementDashboard" class="dashboard">
+        <div class="dashboard-header">
+            <h2>Placement Officer Dashboard</h2>
+            <span class="dashboard-close" onclick="closeDashboard('placementDashboard')">&times;</span>
+        </div>
+        <div class="dashboard-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Welcome to Placement Management</h3>
+                <p class="text-gray-600 mb-6">You are now logged in as a Placement Officer. Here you can manage job postings, track student applications, and generate reports.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Active Job Postings</p>
+                                <p class="text-2xl font-bold text-blue-600">18</p>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Student Applications</p>
+                                <p class="text-2xl font-bold text-green-600">142</p>
+                            </div>
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending Approvals</p>
+                                <p class="text-2xl font-bold text-purple-600">7</p>
+                            </div>
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">Recent Job Postings</h4>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Software Engineer</p>
+                                    <p class="text-xs text-gray-400">Posted on 2023-09-15</p>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-600 py-1 px-3 rounded-full">Active</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Data Analyst</p>
+                                    <p class="text-xs text-gray-400">Posted on 2023-09-10</p>
+                                </div>
+                                <span class="text-xs bg-green-100 text-green-600 py-1 px-3 rounded-full">Filled</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">UX Designer</p>
+                                    <p class="text-xs text-gray-400">Posted on 2023-09-05</p>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-600 py-1 px-3 rounded-full">Closed</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">Application Status</h4>
+                        <div class="flex flex-col space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Total Applications</span>
+                                <span class="text-sm font-semibold text-gray-800">142</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Under Review</span>
+                                <span class="text-sm font-semibold text-gray-800">35</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Approved</span>
+                                <span class="text-sm font-semibold text-gray-800">97</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Rejected</span>
+                                <span class="text-sm font-semibold text-gray-800">10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recruiter Dashboard -->
+    <div id="recruiterDashboard" class="dashboard">
+        <div class="dashboard-header">
+            <h2>Recruiter Dashboard</h2>
+            <span class="dashboard-close" onclick="closeDashboard('recruiterDashboard')">&times;</span>
+        </div>
+        <div class="dashboard-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Welcome to Recruiter Dashboard</h3>
+                <p class="text-gray-600 mb-6">Manage your job postings, view applicant profiles, and track your recruitment progress.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Active Postings</p>
+                                <p class="text-2xl font-bold text-blue-600">12</p>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Applications Received</p>
+                                <p class="text-2xl font-bold text-green-600">98</p>
+                            </div>
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Interviews Scheduled</p>
+                                <p class="text-2xl font-bold text-purple-600">7</p>
+                            </div>
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">Recent Applications</h4>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">John Doe</p>
+                                    <p class="text-xs text-gray-400">Applied for Software Engineer</p>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-600 py-1 px-3 rounded-full">Reviewed</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Jane Smith</p>
+                                    <p class="text-xs text-gray-400">Applied for Data Analyst</p>
+                                </div>
+                                <span class="text-xs bg-green-100 text-green-600 py-1 px-3 rounded-full">Interview</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Emily Johnson</p>
+                                    <p class="text-xs text-gray-400">Applied for UX Designer</p>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-600 py-1 px-3 rounded-full">Rejected</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">Upcoming Interviews</h4>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">John Doe</p>
+                                    <p class="text-xs text-gray-400">Software Engineer - 2023-09-20</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-600 py-1 px-3 rounded-full">Scheduled</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Jane Smith</p>
+                                    <p class="text-xs text-gray-400">Data Analyst - 2023-09-22</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-600 py-1 px-3 rounded-full">Scheduled</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="studentDashboard" class="dashboard">
+        <div class="dashboard-header">
+            <h2>Student Dashboard</h2>
+            <span class="dashboard-close" onclick="closeDashboard('studentDashboard')">&times;</span>
+        </div>
+        <div class="dashboard-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Welcome, [Student Name]</h3>
+                <p class="text-gray-600 mb-6">Here you can view your profile, apply for jobs, and track your application status.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Applied Jobs</p>
+                                <p class="text-2xl font-bold text-blue-600">25</p>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-briefcase text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Interviews Scheduled</p>
+                                <p class="text-2xl font-bold text-green-600">5</p>
+                            </div>
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Profile Completeness</p>
+                                <p class="text-2xl font-bold text-purple-600">80%</p>
+                            </div>
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">My Applications</h4>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Software Engineer</p>
+                                    <p class="text-xs text-gray-400">Applied on 2023-09-15</p>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-600 py-1 px-3 rounded-full">Pending</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Data Analyst</p>
+                                    <p class="text-xs text-gray-400">Applied on 2023-09-10</p>
+                                </div>
+                                <span class="text-xs bg-green-100 text-green-600 py-1 px-3 rounded-full">Interview</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">UX Designer</p>
+                                    <p class="text-xs text-gray-400">Applied on 2023-09-05</p>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-600 py-1 px-3 rounded-full">Rejected</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <h4 class="text-md font-semibold text-gray-800 mb-3">Upcoming Interviews</h4>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Software Engineer</p>
+                                    <p class="text-xs text-gray-400">2023-09-20</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-600 py-1 px-3 rounded-full">Scheduled</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Data Analyst</p>
+                                    <p class="text-xs text-gray-400">2023-09-22</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-600 py-1 px-3 rounded-full">Scheduled</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showLoginForm(role) {
+            closeAllModals();
+            document.getElementById(role + 'LoginModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function closeAllModals() {
+            var modals = document.querySelectorAll('.modal');
+            modals.forEach(function(modal) {
+                modal.style.display = 'none';
+            });
+        }
+
+        function quickLogin(role, id, password) {
+            document.getElementById(role + 'Id').value = id;
+            document.getElementById(role + 'Password').value = password;
+            document.getElementById(role + 'LoginForm').submit();
+        }
+
+        function openDashboard(role) {
+            closeAllModals();
+            document.getElementById(role + 'Dashboard').style.display = 'block';
+        }
+
+        function closeDashboard(dashboardId) {
+            document.getElementById(dashboardId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
